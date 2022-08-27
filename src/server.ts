@@ -45,7 +45,7 @@ import { filter } from 'bluebird';
     try {
       const filteredImagePath = await filterImageFromURL(imageUrl);
 
-      res.status(200).sendFile(filteredImagePath, function (err) {
+      res.status(200).sendFile(filteredImagePath, function (err: any, next: (arg0: any) => void) {
         if (err) {
           next(err);
         } else {
