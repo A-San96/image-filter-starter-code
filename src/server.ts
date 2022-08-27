@@ -43,18 +43,18 @@ import { filter } from 'bluebird';
     }
 
     try {
-      const filteredPath = await filterImageFromURL(imageUrl);
+      const filteredImagePath = await filterImageFromURL(imageUrl);
 
-      res.sendFile(filteredPath, function (err) {
+      res.status(200).sendFile(filteredImagePath, function (err) {
         if (err) {
           next(err);
         } else {
-          deleteLocalFiles([filteredPath]);
+          deleteLocalFiles([filteredImagePath]);
         }
       });
 
     } catch (error) {
-      return res.status(500).send({message: "Can not filter this image."});
+      return res.status(422).send({message: "Can not filter this image."});
     }
 
   } );
