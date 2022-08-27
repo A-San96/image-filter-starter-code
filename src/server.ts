@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { filter } from 'bluebird';
 
 (async () => {
 
@@ -33,6 +34,30 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
+  app.get( "/filteredimage", async ( req, res ) => {
+
+    const imageUrl = req.query.image_url;
+
+    if(!imageUrl){
+      return res.status(400).send({ message: 'Image URL query is required' })
+    }
+
+    try {
+      const filteredPath = await filterImageFromURL(imageUrl);
+
+      res.sendFile(filteredPath, function (err) {
+        if (err) {
+          next(err);
+        } else {
+          deleteLocalFiles([filteredPath]);
+        }
+      });
+
+    } catch (error) {
+      return res.status(500).send({message: "Can not filter this image."});
+    }
+
+  } );
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
@@ -44,3 +69,4 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       console.log( `press CTRL+C to stop server` );
   } );
 })();
+
