@@ -34,16 +34,16 @@ import { filter } from 'bluebird';
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req: express.Request, res: express.Response ) => {
 
-    const imageUrl = req.query.image_url;
+    const imageUrl: string = req.query.image_url;
 
     if(!imageUrl){
       return res.status(400).send({ message: 'Image URL query is required' })
     }
 
     try {
-      const filteredImagePath = await filterImageFromURL(imageUrl);
+      const filteredImagePath: string = await filterImageFromURL(imageUrl);
 
       res.status(200).sendFile(filteredImagePath, function (err: any, next: (arg0: any) => void) {
         if (err) {
@@ -54,11 +54,11 @@ import { filter } from 'bluebird';
       });
 
     } catch (error) {
-      return res.status(422).send({message: "Can not filter this image."});
+      return res.status(500).send({message: "Can not filter this image."});
     }
 
   } );
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: express.Request, res: express.Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
